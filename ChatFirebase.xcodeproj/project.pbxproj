@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		BF0156791FCDDE8900A2F4DE /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0156781FCDDE8900A2F4DE /* NewMessageController.swift */; };
 		BF01567E1FCDEC7600A2F4DE /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF01567D1FCDEC7600A2F4DE /* User.swift */; };
+		BF65B9E41FCEA233003D290E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF65B9E31FCEA233003D290E /* Extensions.swift */; };
 		BF7DFD831FCD812A00BBBD12 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7DFD821FCD812A00BBBD12 /* AppDelegate.swift */; };
 		BF7DFD851FCD812A00BBBD12 /* MessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7DFD841FCD812A00BBBD12 /* MessageController.swift */; };
 		BF7DFD8A1FCD812A00BBBD12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF7DFD891FCD812A00BBBD12 /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 		BA181D00881A060D770C0F3C /* Pods_ChatFirebase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatFirebase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF0156781FCDDE8900A2F4DE /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		BF01567D1FCDEC7600A2F4DE /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		BF65B9E31FCEA233003D290E /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		BF7DFD7F1FCD812A00BBBD12 /* ChatFirebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatFirebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF7DFD821FCD812A00BBBD12 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BF7DFD841FCD812A00BBBD12 /* MessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageController.swift; sourceTree = "<group>"; };
@@ -71,6 +73,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		BF65B9E21FCEA212003D290E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				BF65B9E31FCEA233003D290E /* Extensions.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		BF7DFD761FCD812A00BBBD12 = {
 			isa = PBXGroup;
 			children = (
@@ -92,6 +102,7 @@
 		BF7DFD811FCD812A00BBBD12 /* ChatFirebase */ = {
 			isa = PBXGroup;
 			children = (
+				BF65B9E21FCEA212003D290E /* Helpers */,
 				BF01567A1FCDE2A500A2F4DE /* Model */,
 				BF7DFD941FCD840000BBBD12 /* Controller */,
 				BF7DFD821FCD812A00BBBD12 /* AppDelegate.swift */,
@@ -241,6 +252,7 @@
 				BF01567E1FCDEC7600A2F4DE /* User.swift in Sources */,
 				BF7DFD831FCD812A00BBBD12 /* AppDelegate.swift in Sources */,
 				BF86B7041FCE6AB600F30D06 /* LoginController+handles.swift in Sources */,
+				BF65B9E41FCEA233003D290E /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
