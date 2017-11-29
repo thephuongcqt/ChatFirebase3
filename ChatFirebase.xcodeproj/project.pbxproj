@@ -14,6 +14,7 @@
 		BF7DFD8A1FCD812A00BBBD12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF7DFD891FCD812A00BBBD12 /* Assets.xcassets */; };
 		BF7DFD961FCD841E00BBBD12 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7DFD951FCD841E00BBBD12 /* LoginController.swift */; };
 		BF81AB181FCD9F14008BA762 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BF81AB171FCD9F14008BA762 /* GoogleService-Info.plist */; };
+		BF86B7041FCE6AB600F30D06 /* LoginController+handles.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF86B7031FCE6AB600F30D06 /* LoginController+handles.swift */; };
 		EC2AD54DEAB0415A9B8E3D46 /* Pods_ChatFirebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA181D00881A060D770C0F3C /* Pods_ChatFirebase.framework */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 		BF7DFD8E1FCD812A00BBBD12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BF7DFD951FCD841E00BBBD12 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		BF81AB171FCD9F14008BA762 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BF86B7031FCE6AB600F30D06 /* LoginController+handles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginController+handles.swift"; sourceTree = "<group>"; };
 		F72601F198CC6B0FC9404BEF /* Pods-ChatFirebase.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatFirebase.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatFirebase/Pods-ChatFirebase.release.xcconfig"; sourceTree = "<group>"; };
 		F72B5AA05453F53115A9C39C /* Pods-ChatFirebase.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatFirebase.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatFirebase/Pods-ChatFirebase.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -106,6 +108,7 @@
 				BF7DFD951FCD841E00BBBD12 /* LoginController.swift */,
 				BF7DFD841FCD812A00BBBD12 /* MessageController.swift */,
 				BF0156781FCDDE8900A2F4DE /* NewMessageController.swift */,
+				BF86B7031FCE6AB600F30D06 /* LoginController+handles.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -237,6 +240,7 @@
 				BF7DFD961FCD841E00BBBD12 /* LoginController.swift in Sources */,
 				BF01567E1FCDEC7600A2F4DE /* User.swift in Sources */,
 				BF7DFD831FCD812A00BBBD12 /* AppDelegate.swift in Sources */,
+				BF86B7041FCE6AB600F30D06 /* LoginController+handles.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,6 +362,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PQT9G6B78G;
 				INFOPLIST_FILE = ChatFirebase/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = phuongnt.ChatFirebase;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -374,6 +379,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PQT9G6B78G;
 				INFOPLIST_FILE = ChatFirebase/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = phuongnt.ChatFirebase;
 				PRODUCT_NAME = "$(TARGET_NAME)";

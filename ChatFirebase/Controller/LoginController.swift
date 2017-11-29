@@ -66,10 +66,15 @@ class LoginController: UIViewController {
         return view
     }()
     
-    let profileImageView: UIImageView = {
+    lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = #imageLiteral(resourceName: "image_profile")
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
+        imageView.isUserInteractionEnabled = true
+        
         return imageView
     }()
     
@@ -131,17 +136,38 @@ class LoginController: UIViewController {
             guard let uid = user?.uid else{
                 return
             }
-            let ref = FIRDatabase.database().reference(fromURL: "https://chatfirebase-1e377.firebaseio.com/")
-            let values = ["name": name, "email": email]
-            let userReference = ref.child("users").child(uid)
-            userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
-                if error != nil{
-                    print(error!)
-                    return
-                }
-                print("Save user successfully into Firebase db")
-                self.dismiss(animated: true, completion: nil)
-            })
+            //successfully authenticated user
+            let imageName = NSUUID().uuidString
+            let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).png")
+            if let uploadData = UIImagePNGRepresentation(self.profileImageView.image!){
+                storageRef.put(uploadData, metadata: nil, completion: { (metadata, error) in
+                    if error != nil{
+                        print(error!) 
+                        return
+                    }
+                    if let profileImageUrl = metadata?.downloadURL()?.absoluteString{
+                        let values = ["name": name, "email": email, "profileImageUrl": profileImageUrl]
+                        self.registerUserIntoDatabaseWidthUID(uid: uid, values: values)
+                    }
+                })
+            }
+            
+            
+            
+        })
+    }
+    
+    private func registerUserIntoDatabaseWidthUID(uid: String, values: [String : String]){
+        let ref = FIRDatabase.database().reference(fromURL: "https://chatfirebase-1e377.firebaseio.com/")
+        
+        let userReference = ref.child("users").child(uid)
+        userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
+            if error != nil{
+                print(error!)
+                return
+            }
+            print("Save user successfully into Firebase db")
+            self.dismiss(animated: true, completion: nil)
         })
     }
     
