@@ -18,10 +18,61 @@ class MessageController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleNewMessage))
         
         checkIfUserLoggedIn()
+        
+        tableView.register(UserCell.self, forCellReuseIdentifier: "cellId")
+        
+        observeMessage()
+    }
+    
+    var messages = [Message]()
+    var messagesDictionary = [String: Message]()
+    
+    func observeMessage(){
+        let ref = FIRDatabase.database().reference().child("messages")
+        ref.observe(.childAdded, with: { (snapshot) in
+            print(snapshot)
+            if let dictionary = snapshot.value as? [String: Any]{
+                let message = Message()
+                message.setValuesForKeys(dictionary)
+                
+                if let toId = message.toId {
+                    self.messagesDictionary[toId] = message
+                    self.messages = Array(self.messagesDictionary.values)
+                    self.messages.sort(by: { (message1, message2) -> Bool in
+                        if let time1 = message1.timestamp?.intValue, let time2 = message2.timestamp?.intValue{
+                            return time1 > time2
+                        }
+                        return false
+                    })
+                }
+                
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }, withCancel: nil)
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 72
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellId")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cellId", for: indexPath) as! UserCell
+        let message = messages[indexPath.row]
+        cell.message = message
+        return cell
     }
     
     @objc func handleNewMessage(){
         let newMessageController = NewMessageController()
+        newMessageController.messagesController = self
         let navController = UINavigationController(rootViewController: newMessageController)
         present(navController, animated: true, completion: nil)
     }
@@ -45,14 +96,14 @@ class MessageController: UITableViewController {
                 let user = User()
                 user.setValuesForKeys(dictionary)
                 self.setupNavBarWithUser(user: user)
-            }
+                            }
         }, withCancel: nil)
     }
     
     func setupNavBarWithUser(user: User){
         self.navigationItem.title = user.name
         
-        let titleView = UIView()
+        let titleView = UIButton()
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
         
         let containerView = UIView()
@@ -70,7 +121,7 @@ class MessageController: UITableViewController {
         }
         
         containerView.addSubview(profileImageView)
-        
+
 //        setup constraint
         profileImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
         profileImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
@@ -82,7 +133,7 @@ class MessageController: UITableViewController {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         containerView.addSubview(nameLabel)
-        
+
         nameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 8).isActive = true
         nameLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
         nameLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
@@ -90,8 +141,24 @@ class MessageController: UITableViewController {
         
         containerView.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         containerView.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
+        containerView.heightAnchor.constraint(equalTo: titleView.heightAnchor).isActive = true
     
+//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(showChatControllerForUser(user: nil)))
+//        nameLabel.isUserInteractionEnabled = true
+//        profileImageView.isUserInteractionEnabled = true
+        titleView.isUserInteractionEnabled = true
+//        nameLabel.addGestureRecognizer(tapGestureRecognizer)
+//        profileImageView.addGestureRecognizer(tapGestureRecognizer)
+//        titleView.addTarget(self, action: #selector(showChatController), for: .touchUpInside)
+//        titleView.addGestureRecognizer(tapGestureRecognizer)
         self.navigationItem.titleView = titleView
+    }
+    
+    @objc func showChatControllerForUser(user: User){
+        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+        chatLogController.user = user
+        
+        navigationController?.pushViewController(chatLogController, animated: true)
     }
 
     @objc func handleLogout(){

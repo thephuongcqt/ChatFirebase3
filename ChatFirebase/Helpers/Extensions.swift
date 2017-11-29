@@ -35,3 +35,14 @@ extension UIImageView{
         }).resume()
     }
 }
+
+extension UIViewController{
+    func setupKeyboardGestureRecognizer(){
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyBoard))
+        view.addGestureRecognizer(gestureRecognizer)
+    }
+    
+    @objc func dismissKeyBoard(){
+        view.endEditing(true)
+    }
+}

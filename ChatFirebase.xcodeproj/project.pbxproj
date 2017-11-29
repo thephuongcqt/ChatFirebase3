@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		BF0156791FCDDE8900A2F4DE /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0156781FCDDE8900A2F4DE /* NewMessageController.swift */; };
 		BF01567E1FCDEC7600A2F4DE /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF01567D1FCDEC7600A2F4DE /* User.swift */; };
+		BF49367B1FCED82900F21FE1 /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF49367A1FCED82900F21FE1 /* ChatLogController.swift */; };
+		BF49367D1FCEF97600F21FE1 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF49367C1FCEF97600F21FE1 /* Message.swift */; };
+		BF4936801FCF06FF00F21FE1 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF49367F1FCF06FF00F21FE1 /* UserCell.swift */; };
 		BF65B9E41FCEA233003D290E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF65B9E31FCEA233003D290E /* Extensions.swift */; };
 		BF7DFD831FCD812A00BBBD12 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7DFD821FCD812A00BBBD12 /* AppDelegate.swift */; };
 		BF7DFD851FCD812A00BBBD12 /* MessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7DFD841FCD812A00BBBD12 /* MessageController.swift */; };
@@ -23,6 +26,9 @@
 		BA181D00881A060D770C0F3C /* Pods_ChatFirebase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatFirebase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF0156781FCDDE8900A2F4DE /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		BF01567D1FCDEC7600A2F4DE /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		BF49367A1FCED82900F21FE1 /* ChatLogController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
+		BF49367C1FCEF97600F21FE1 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		BF49367F1FCF06FF00F21FE1 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		BF65B9E31FCEA233003D290E /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		BF7DFD7F1FCD812A00BBBD12 /* ChatFirebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatFirebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF7DFD821FCD812A00BBBD12 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -69,8 +75,17 @@
 			isa = PBXGroup;
 			children = (
 				BF01567D1FCDEC7600A2F4DE /* User.swift */,
+				BF49367C1FCEF97600F21FE1 /* Message.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		BF49367E1FCF06F000F21FE1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				BF49367F1FCF06FF00F21FE1 /* UserCell.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		BF65B9E21FCEA212003D290E /* Helpers */ = {
@@ -102,6 +117,7 @@
 		BF7DFD811FCD812A00BBBD12 /* ChatFirebase */ = {
 			isa = PBXGroup;
 			children = (
+				BF49367E1FCF06F000F21FE1 /* View */,
 				BF65B9E21FCEA212003D290E /* Helpers */,
 				BF01567A1FCDE2A500A2F4DE /* Model */,
 				BF7DFD941FCD840000BBBD12 /* Controller */,
@@ -120,6 +136,7 @@
 				BF7DFD841FCD812A00BBBD12 /* MessageController.swift */,
 				BF0156781FCDDE8900A2F4DE /* NewMessageController.swift */,
 				BF86B7031FCE6AB600F30D06 /* LoginController+handles.swift */,
+				BF49367A1FCED82900F21FE1 /* ChatLogController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -246,12 +263,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF49367B1FCED82900F21FE1 /* ChatLogController.swift in Sources */,
 				BF0156791FCDDE8900A2F4DE /* NewMessageController.swift in Sources */,
 				BF7DFD851FCD812A00BBBD12 /* MessageController.swift in Sources */,
+				BF49367D1FCEF97600F21FE1 /* Message.swift in Sources */,
 				BF7DFD961FCD841E00BBBD12 /* LoginController.swift in Sources */,
 				BF01567E1FCDEC7600A2F4DE /* User.swift in Sources */,
 				BF7DFD831FCD812A00BBBD12 /* AppDelegate.swift in Sources */,
 				BF86B7041FCE6AB600F30D06 /* LoginController+handles.swift in Sources */,
+				BF4936801FCF06FF00F21FE1 /* UserCell.swift in Sources */,
 				BF65B9E41FCEA233003D290E /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
