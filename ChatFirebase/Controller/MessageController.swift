@@ -21,7 +21,43 @@ class MessageController: UITableViewController {
         
         tableView.register(UserCell.self, forCellReuseIdentifier: "cellId")
         
-        observeMessage()
+//        observeMessage()
+    }
+    
+    func observeUserMessages(){
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
+            return
+        }
+        let ref = FIRDatabase.database().reference().child("user-messages").child(uid)
+        ref.observe(.childAdded, with: { (snapshot) in
+            let messageId = snapshot.key
+            let messageReference = FIRDatabase.database().reference().child("messages").child(messageId)
+            messageReference.observeSingleEvent(of: .value, with: { (snapshot) in
+                
+                print(snapshot)
+                if let dictionary = snapshot.value as? [String: Any]{
+                    let message = Message()
+                    message.setValuesForKeys(dictionary)
+                    
+                    if let toId = message.toId {
+                        self.messagesDictionary[toId] = message
+                        self.messages = Array(self.messagesDictionary.values)
+                        self.messages.sort(by: { (message1, message2) -> Bool in
+                            if let time1 = message1.timestamp?.intValue, let time2 = message2.timestamp?.intValue{
+                                return time1 > time2
+                            }
+                            return false
+                        })
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+                
+            }, withCancel: nil)
+            
+        }, withCancel: nil)
     }
     
     var messages = [Message]()
@@ -101,6 +137,11 @@ class MessageController: UITableViewController {
     }
     
     func setupNavBarWithUser(user: User){
+        messages.removeAll()
+        messagesDictionary.removeAll()
+        tableView.reloadData()
+        observeUserMessages()
+        
         self.navigationItem.title = user.name
         
         let titleView = UIButton()
