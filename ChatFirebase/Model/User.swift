@@ -8,8 +8,9 @@
 
 import UIKit
 
+@objcMembers
 class User: NSObject {
-    var email: String?
-    var name: String?
-    var profileUrl: String?
+    @objc var email: String?
+    @objc var name: String?
+    @objc var profileImageUrl: String?
 }

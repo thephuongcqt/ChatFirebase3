@@ -9,6 +9,7 @@ import UIKit
 import Firebase
 
 class LoginController: UIViewController {
+    var messageController: MessageController?
     
     let inputsContainerView: UIView = {
         let view = UIView()
@@ -120,6 +121,7 @@ class LoginController: UIViewController {
                 print(error!)
                 return
             }
+            self.messageController?.fetchUserAndSetupNavBarTitle()
             self.dismiss(animated: true, completion: nil)
         })
     }
@@ -138,8 +140,9 @@ class LoginController: UIViewController {
             }
             //successfully authenticated user
             let imageName = NSUUID().uuidString
-            let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).png")
-            if let uploadData = UIImagePNGRepresentation(self.profileImageView.image!){
+            let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).jpg")
+//            if let uploadData = UIImagePNGRepresentation(self.profileImageView.image!){
+            if let profileImage = self.profileImageView.image, let uploadData = UIImageJPEGRepresentation(profileImage, 0.1){
                 storageRef.put(uploadData, metadata: nil, completion: { (metadata, error) in
                     if error != nil{
                         print(error!) 
@@ -151,14 +154,12 @@ class LoginController: UIViewController {
                     }
                 })
             }
-            
-            
-            
         })
     }
     
     private func registerUserIntoDatabaseWidthUID(uid: String, values: [String : String]){
-        let ref = FIRDatabase.database().reference(fromURL: "https://chatfirebase-1e377.firebaseio.com/")
+//        let ref = FIRDatabase.database().reference(fromURL: "https://chatfirebase-1e377.firebaseio.com/")
+        let ref = FIRDatabase.database().reference(fromURL: "https://chatmessenger-b5a6e.firebaseio.com/")
         
         let userReference = ref.child("users").child(uid)
         userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
@@ -167,6 +168,9 @@ class LoginController: UIViewController {
                 return
             }
             print("Save user successfully into Firebase db")
+            let user = User()
+            user.setValuesForKeys(values)
+            self.messageController?.setupNavBarWithUser(user: user)
             self.dismiss(animated: true, completion: nil)
         })
     }

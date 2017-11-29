@@ -21,11 +21,12 @@ class NewMessageController: UITableViewController {
     
     func fetchUser(){
         FIRDatabase.database().reference().child("users").observe(.childAdded, with: { (snapshot) in
-            if let dictionary = snapshot.value as? [String: String]{
+            if let dictionary = snapshot.value as? [String: AnyObject]{
                 let user = User()
-                user.name = dictionary["name"]
-                user.email = dictionary["email"]
-                user.profileUrl = dictionary["profileImageUrl"]
+                user.setValuesForKeys(dictionary)
+//                user.name = dictionary["name"]
+//                user.email = dictionary["email"]
+//                user.profileImageUrl = dictionary["profileImageUrl"]
                 self.users.append(user)
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
@@ -52,7 +53,7 @@ class NewMessageController: UITableViewController {
         let user = users[indexPath.item]
         cell.textLabel?.text = user.name
         cell.detailTextLabel?.text = user.email
-        if let profileImageUrl = user.profileUrl{
+        if let profileImageUrl = user.profileImageUrl{
             cell.profileImageView.loadImageUsingCacheWithUrlString(urlString: profileImageUrl)
         }
         return cell
