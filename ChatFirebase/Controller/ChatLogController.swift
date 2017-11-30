@@ -155,15 +155,10 @@ class ChatLogController: UIViewController, UITextFieldDelegate, UICollectionView
             let userMessageRef = FIRDatabase.database().reference().child("user-messages").child(fromId)
             let messageId = childRef.key
             userMessageRef.updateChildValues([messageId: 1])
-            let recipientUserMessagesRef = FIRDatabase.database().reference().child("user-messages").child(toId)
-            recipientUserMessagesRef.updateChildValues([messageId: 1])
         }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let text = textField.text, text.isEmpty {
-            return true
-        }
         handleButtonSend()
         return true
     }
@@ -177,38 +172,11 @@ class ChatLogController: UIViewController, UITextFieldDelegate, UICollectionView
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! ChatMessageCell
         
         let message = messages[indexPath.item]
-        
-        setupCell(cell: cell, message: message)
+        cell.textView.text = message.text
         
         let estimateWidthMessage = message.text!.estimateCGrect(withConstrainedWidth: 200, font: UIFont.systemFont(ofSize: 16)).width + 32
         cell.bubbleWidthAnchor?.constant = estimateWidthMessage
         return cell
-    }
-    
-    func setupCell(cell: ChatMessageCell, message: Message){
-        cell.textView.text = message.text
-        
-        if let profileImageUrl = self.user?.profileImageUrl{
-            cell.profileImageView.loadImageUsingCacheWithUrlString(urlString: profileImageUrl)
-        }
-        
-        if message.fromId == FIRAuth.auth()?.currentUser?.uid{
-            // outcoming blue
-            cell.bubbleView.backgroundColor = UIColor().bubbleBlue
-            cell.textView.textColor = .white
-            cell.profileImageView.isHidden = true
-            
-            cell.bubbleRightAnchor?.isActive = true
-            cell.bubbleLeftAnchor?.isActive = false
-        } else{
-            //incoming gray
-            cell.bubbleView.backgroundColor = UIColor(r: 240, g: 240, b: 240)
-            cell.textView.textColor = .black
-            cell.profileImageView.isHidden = false
-            
-            cell.bubbleRightAnchor?.isActive = false
-            cell.bubbleLeftAnchor?.isActive = true
-        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

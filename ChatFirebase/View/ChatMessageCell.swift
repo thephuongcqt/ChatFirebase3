@@ -28,42 +28,21 @@ class ChatMessageCell: UICollectionViewCell {
         return view
     }()
     
-    let profileImageView: UIImageView = {
-        let imageView = UIImageView()
-//        imageView.image = #imageLiteral(resourceName: "image_profile")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 16
-        imageView.layer.masksToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
-    
     var bubbleWidthAnchor: NSLayoutConstraint?
-    var bubbleRightAnchor: NSLayoutConstraint?
-    var bubbleLeftAnchor: NSLayoutConstraint?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         addSubview(bubbleView)
         addSubview(textView)
-        addSubview(profileImageView)
         
-        profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive = true
-        profileImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 32).isActive = true
-        
-        bubbleView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
-        
-        bubbleRightAnchor = bubbleView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -8)
-        bubbleRightAnchor?.isActive = true
+        NSLayoutConstraint.activate([
+            bubbleView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -8),
+            bubbleView.topAnchor.constraint(equalTo: self.topAnchor),
+            bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor)
+            ])
         bubbleWidthAnchor = bubbleView.widthAnchor.constraint(equalToConstant: 200)
         bubbleWidthAnchor?.isActive = true
-        bubbleLeftAnchor = bubbleView.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8)
-//        bubbleLeftAnchor?.isActive
-        
         NSLayoutConstraint.activate([
             textView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8),
             textView.topAnchor.constraint(equalTo: self.topAnchor),
@@ -74,5 +53,8 @@ class ChatMessageCell: UICollectionViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+        
+        
+        
     }
 }
