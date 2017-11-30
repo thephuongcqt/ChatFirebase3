@@ -9,7 +9,15 @@
 import UIKit
 import Firebase
 
-class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
+class ChatLogController: UIViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    lazy var collectionView: UICollectionView = {
+        let collection = UICollectionView(frame: self.view.frame, collectionViewLayout: UICollectionViewFlowLayout())
+        collection.translatesAutoresizingMaskIntoConstraints = false
+        collection.backgroundColor = .white
+        return collection
+    }()
+    
     let inputsHeight: CGFloat = 50
     var user: User?{
         didSet{
@@ -38,7 +46,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 if message.getChatPartnerId() == self.user?.id{
                     self.messages.append(message)
                     DispatchQueue.main.async {
-                        self.collectionView?.reloadData()
+                        self.collectionView.reloadData()
                     }
                 }
                 
@@ -58,16 +66,28 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         super.viewDidLoad()
         setupKeyboardGestureRecognizer()
         navigationItem.title = user?.name
+        view.addSubview(collectionView)
+        view.backgroundColor = .white
         
-        collectionView?.alwaysBounceVertical = true
-        collectionView?.backgroundColor = .white
-        collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: "cellId")
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.alwaysBounceVertical = true
+        collectionView.register(ChatMessageCell.self, forCellWithReuseIdentifier: "cellId")
+        
+        collectionView.leadingAnchor.constraint(equalTo: safeLeadingAnchor).isActive = true
+        collectionView.topAnchor.constraint(equalTo: safeTopAnchor).isActive = true
+        collectionView.widthAnchor.constraint(equalTo: safeWidthAnchor).isActive = true
+        collectionView.heightAnchor.constraint(equalTo: safeHeightAnchor).isActive = true
+        if #available(iOS 11, *){
+            collectionView.contentInsetAdjustmentBehavior = .always
+        }
+        
         var heightInset = inputsHeight
         if #available(iOS 11, *){
             heightInset += 32
         }
-        collectionView?.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: heightInset, right: 0)
-        collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 8, left: 0, bottom: heightInset, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: heightInset, right: 0)
+        collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 8, left: 0, bottom: heightInset, right: 0)
         
         setupInputComponents()
     }
@@ -148,13 +168,14 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         return true
     }
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         print("this is message count", messages.count)
         return messages.count
     }
     
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! ChatMessageCell
+        
         let message = messages[indexPath.item]
         
         setupCell(cell: cell, message: message)
@@ -200,7 +221,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        collectionView?.collectionViewLayout.invalidateLayout()
+        collectionView.collectionViewLayout.invalidateLayout()
     }
     
 //    private func estimateFrameForText(text: String) -> CGRect{

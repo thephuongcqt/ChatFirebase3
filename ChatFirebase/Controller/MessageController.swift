@@ -24,7 +24,7 @@ class MessageController: UIViewController, UITableViewDataSource, UITableViewDel
         
         tableView.leadingAnchor.constraint(equalTo: safeLeadingAnchor).isActive = true
         tableView.topAnchor.constraint(equalTo: safeTopAnchor).isActive = true
-        tableView.widthAnchor.constraint(greaterThanOrEqualTo: safeWidthAnchor).isActive = true
+        tableView.widthAnchor.constraint(equalTo: safeWidthAnchor).isActive = true
         tableView.heightAnchor.constraint(equalTo: safeHeightAnchor).isActive = true
         
         
@@ -238,7 +238,8 @@ class MessageController: UIViewController, UITableViewDataSource, UITableViewDel
     }
     
     @objc func showChatControllerForUser(user: User){
-        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+//        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+        let chatLogController = ChatLogController()
         chatLogController.user = user
         
         navigationController?.pushViewController(chatLogController, animated: true)
