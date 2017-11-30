@@ -9,8 +9,42 @@
 import UIKit
 import Firebase
 
-class ChatLogController: UICollectionViewController, UITextFieldDelegate {
-    var user: User?
+class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
+    let inputsHeight: CGFloat = 50
+    var user: User?{
+        didSet{
+            navigationItem.title = user?.name
+            messages.removeAll()
+            observeMessages()
+        }
+    }
+    
+    var messages = [Message]()
+    
+    func observeMessages(){
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else{
+            return
+        }
+        let userMessagesRef = FIRDatabase.database().reference().child("user-messages").child(uid)
+        userMessagesRef.observe(.childAdded, with: { (snapshot) in
+            let messageId = snapshot.key
+            let messagesRef = FIRDatabase.database().reference().child("messages").child(messageId)
+            messagesRef.observeSingleEvent(of: .value, with: { (snapshot) in
+                guard let dictionary = snapshot.value as? [String: Any] else{
+                    return
+                }
+                let message = Message()
+                message.setValuesForKeys(dictionary)
+                if message.getChatPartnerId() == self.user?.id{
+                    self.messages.append(message)
+                    DispatchQueue.main.async {
+                        self.collectionView?.reloadData()
+                    }
+                }
+                
+            }, withCancel: nil)
+        }, withCancel: nil)
+    }
     
     lazy var inputTextField: UITextField = {
         let textField = UITextField()
@@ -25,7 +59,15 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate {
         setupKeyboardGestureRecognizer()
         navigationItem.title = user?.name
         
+        collectionView?.alwaysBounceVertical = true
         collectionView?.backgroundColor = .white
+        collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: "cellId")
+        var heightInset = inputsHeight
+        if #available(iOS 11, *){
+            heightInset += 32
+        }
+        collectionView?.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: heightInset, right: 0)
+        collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 8, left: 0, bottom: heightInset, right: 0)
         
         setupInputComponents()
     }
@@ -33,18 +75,14 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate {
     func setupInputComponents(){
         let containerView = UIView()
         
+        containerView.backgroundColor = .white
         containerView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(containerView)
-        
-        containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true        
-        if #available(iOS 11.0, *){
-            containerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        } else{
-            containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        }
-        containerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        containerView.leadingAnchor.constraint(equalTo: getSafeAreaLeadingAnchor()).isActive = true
+        containerView.bottomAnchor.constraint(equalTo: getSafeAreaBottomAnchor()).isActive = true
+        containerView.widthAnchor.constraint(equalTo: getSafeAreaWidthAnchor()).isActive = true
+        containerView.heightAnchor.constraint(equalToConstant: inputsHeight ).isActive = true
         
         let sendButton = UIButton()
         sendButton.setTitle("Send", for: .normal)
@@ -93,7 +131,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate {
                 print(error!)
                 return
             }
-            
+            self.inputTextField.text = nil
             let userMessageRef = FIRDatabase.database().reference().child("user-messages").child(fromId)
             let messageId = childRef.key
             userMessageRef.updateChildValues([messageId: 1])
@@ -104,4 +142,38 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate {
         handleButtonSend()
         return true
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("this is message count", messages.count)
+        return messages.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! ChatMessageCell
+        let message = messages[indexPath.item]
+        cell.textView.text = message.text
+        
+        let estimateWidthMessage = message.text!.estimateCGrect(withConstrainedWidth: 200, font: UIFont.systemFont(ofSize: 16)).width + 32
+        cell.bubbleWidthAnchor?.constant = estimateWidthMessage
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        var height: CGFloat = 80
+        
+        if let text = messages[indexPath.item].text{
+            height = text.height(withConstrainedWidth: 200, font: UIFont.systemFont(ofSize: 16)) + 20
+        }
+        return CGSize(width: view.frame.width, height: height)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        collectionView?.collectionViewLayout.invalidateLayout()
+    }
+    
+//    private func estimateFrameForText(text: String) -> CGRect{
+//        let size = CGSize(width: 200, height: 1000)
+//        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+//        return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedStringKey: UIFont.systemFont(ofSize: 16)], context: nil)
+//    }
 }

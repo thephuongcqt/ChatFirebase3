@@ -90,6 +90,8 @@ class LoginController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupKeyboardGestureRecognizer()
+        
 //        view.backgroundColor = UIColor(red: 62/255, green: 92/255, blue: 151/255, alpha: 1)
         view.backgroundColor = UIColor(r: 62, g: 92, b: 151)
         
@@ -139,7 +141,7 @@ class LoginController: UIViewController {
     func setupInputsContainerView(){
         inputsContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         inputsContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        inputsContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -24).isActive = true
+        inputsContainerView.widthAnchor.constraint(equalTo: safeWidthAnchor, constant: -24).isActive = true
         inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: 150)
         inputsContainerViewHeightAnchor?.isActive = true
 //        inputsContainerView.heightAnchor.constraint(equalToConstant: 150).isActive = true

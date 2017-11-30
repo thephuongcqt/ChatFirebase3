@@ -9,10 +9,25 @@
 import UIKit
 import Firebase
 
-class MessageController: UITableViewController {
+class MessageController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        view.addSubview(tableView)
+        
+        tableView.leadingAnchor.constraint(equalTo: safeLeadingAnchor).isActive = true
+        tableView.topAnchor.constraint(equalTo: safeTopAnchor).isActive = true
+        tableView.widthAnchor.constraint(greaterThanOrEqualTo: safeWidthAnchor).isActive = true
+        tableView.heightAnchor.constraint(equalTo: safeHeightAnchor).isActive = true
+        
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
         let image = #imageLiteral(resourceName: "new_message_icon")
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(handleNewMessage))
@@ -20,7 +35,8 @@ class MessageController: UITableViewController {
         checkIfUserLoggedIn()
         
         tableView.register(UserCell.self, forCellReuseIdentifier: "cellId")
-        
+        tableView.delegate = self
+        tableView.dataSource = self
 //        observeMessage()
     }
     
@@ -39,8 +55,8 @@ class MessageController: UITableViewController {
                     let message = Message()
                     message.setValuesForKeys(dictionary)
                     
-                    if let toId = message.toId {
-                        self.messagesDictionary[toId] = message
+                    if let chatPartnerId = message.getChatPartnerId() {
+                        self.messagesDictionary[chatPartnerId] = message
                         self.messages = Array(self.messagesDictionary.values)
                         self.messages.sort(by: { (message1, message2) -> Bool in
                             if let time1 = message1.timestamp?.intValue, let time2 = message2.timestamp?.intValue{
@@ -90,20 +106,39 @@ class MessageController: UITableViewController {
         }, withCancel: nil)
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 72
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 //        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellId")
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellId", for: indexPath) as! UserCell
         let message = messages[indexPath.row]
         cell.message = message
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let message = messages[indexPath.row]
+        guard let chatPartnerId = message.getChatPartnerId() else{
+            return
+        }
+        let ref = FIRDatabase.database().reference().child("users").child(chatPartnerId)
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: Any]{
+                let user = User()
+                user.setValuesForKeys(dictionary)
+                user.id = chatPartnerId
+                
+                
+                self.showChatControllerForUser(user: user)
+            }
+            
+        }, withCancel: nil)
     }
     
     @objc func handleNewMessage(){

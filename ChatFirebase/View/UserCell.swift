@@ -13,17 +13,8 @@ class UserCell: UITableViewCell{
     
     var message: Message? {
         didSet{
-            if let toId = message?.toId{
-                let ref = FIRDatabase.database().reference().child("users").child(toId)
-                ref.observeSingleEvent(of: .value, with: { (snapshot) in
-                    if let dictionary = snapshot.value as? [String: Any]{
-                        self.textLabel?.text = dictionary["name"] as? String
-                        if let profileImageUrl = dictionary["profileImageUrl"] as? String{
-                            self.profileImageView.loadImageUsingCacheWithUrlString(urlString: profileImageUrl)
-                        }
-                    }
-                }, withCancel: nil)
-            }
+            setupNameAndProfileImage()
+            
             self.detailTextLabel?.text = message?.text
             if let seconds = message?.timestamp?.doubleValue{
                 let timeStampDate = Date(timeIntervalSince1970: seconds)
@@ -32,6 +23,21 @@ class UserCell: UITableViewCell{
                 timeLabel.text = dateFormatter.string(from: timeStampDate)
             }
             
+        }
+    }
+    
+    private func setupNameAndProfileImage(){
+        
+        if let id = message?.getChatPartnerId(){
+            let ref = FIRDatabase.database().reference().child("users").child(id)
+            ref.observeSingleEvent(of: .value, with: { (snapshot) in
+                if let dictionary = snapshot.value as? [String: Any]{
+                    self.textLabel?.text = dictionary["name"] as? String
+                    if let profileImageUrl = dictionary["profileImageUrl"] as? String{
+                        self.profileImageView.loadImageUsingCacheWithUrlString(urlString: profileImageUrl)
+                    }
+                }
+            }, withCancel: nil)
         }
     }
     
@@ -46,7 +52,7 @@ class UserCell: UITableViewCell{
     
     let timeLabel: UILabel = {
         let label = UILabel()
-        label.text = "HH:MM:SS"
+//        label.text = "HH:MM:SS"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 13)
         label.textColor = .lightGray
@@ -65,7 +71,10 @@ class UserCell: UITableViewCell{
         
         addSubview(profileImageView)
         addSubview(timeLabel)
-        
+        setupLayout()
+    }
+    
+    func setupLayout(){
         profileImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8).isActive = true
         profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 48).isActive = true
@@ -75,6 +84,8 @@ class UserCell: UITableViewCell{
         timeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 18).isActive = true
         timeLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
         timeLabel.heightAnchor.constraint(equalTo: (textLabel?.heightAnchor)!).isActive = true
+        
+        profileImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {
