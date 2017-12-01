@@ -9,13 +9,14 @@
 import UIKit
 import Firebase
 
-@objcMembers
 class Message: NSObject {
-    @objc var fromId: String?
-    @objc var text: String?
-    @objc var timestamp: NSNumber?
-    @objc var toId: String?
+    var fromId: String?
+    var text: String?
+    var timestamp: NSNumber?
+    var toId: String?
     var imageUrl: String?
+    var imageWidth: NSNumber?
+    var imageHeight: NSNumber?
     
     init(dictionary: [String: Any]) {
         self.fromId = dictionary["fromId"] as? String
@@ -23,6 +24,8 @@ class Message: NSObject {
         self.toId = dictionary["toId"] as? String
         self.timestamp = dictionary["timestamp"] as? NSNumber
         self.imageUrl = dictionary["imageUrl"] as? String
+        self.imageWidth = dictionary["imageWidth"] as? NSNumber
+        self.imageHeight = dictionary["imageHeight"] as? NSNumber
     }
     
     func getChatPartnerId() -> String?{

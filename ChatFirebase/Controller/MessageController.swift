@@ -39,7 +39,6 @@ class MessageController: UIViewController, UITableViewDataSource, UITableViewDel
         tableView.register(UserCell.self, forCellReuseIdentifier: "cellId")
         tableView.delegate = self
         tableView.dataSource = self
-//        observeMessage()
     }
     
     // MARK: Observe user messages
@@ -104,72 +103,8 @@ class MessageController: UIViewController, UITableViewDataSource, UITableViewDel
         })
     }
     
-//    func observeUserMessages(){
-//        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
-//            return
-//        }
-//        let ref = FIRDatabase.database().reference().child("user-messages").child(uid)
-//        ref.observe(.childAdded, with: { (snapshot) in
-//            let messageId = snapshot.key
-//            let messageReference = FIRDatabase.database().reference().child("messages").child(messageId)
-//            messageReference.observeSingleEvent(of: .value, with: { (snapshot) in
-//                
-//                print(snapshot)
-//                if let dictionary = snapshot.value as? [String: Any]{
-//                    let message = Message()
-//                    message.setValuesForKeys(dictionary)
-//
-//                    if let chatPartnerId = message.getChatPartnerId() {
-//                        self.messagesDictionary[chatPartnerId] = message
-//                        self.messages = Array(self.messagesDictionary.values)
-//                        self.messages.sort(by: { (message1, message2) -> Bool in
-//                            if let time1 = message1.timestamp?.intValue, let time2 = message2.timestamp?.intValue{
-//                                return time1 > time2
-//                            }
-//                            return false
-//                        })
-//                    }
-//
-//                    DispatchQueue.main.async {
-//                        self.tableView.reloadData()
-//                    }
-//                }
-//
-//            }, withCancel: nil)
-//
-//        }, withCancel: nil)
-//    }
-    
     var messages = [Message]()
     var messagesDictionary = [String: Message]()
-    
-    //MARK:  observe messages - canceled
-    
-    func observeMessage(){
-        let ref = FIRDatabase.database().reference().child("messages")
-        ref.observe(.childAdded, with: { (snapshot) in
-            print(snapshot)
-            if let dictionary = snapshot.value as? [String: Any]{
-                let message = Message(dictionary: dictionary)
-                
-                if let toId = message.toId {
-                    self.messagesDictionary[toId] = message
-                    self.messages = Array(self.messagesDictionary.values)
-                    self.messages.sort(by: { (message1, message2) -> Bool in
-                        if let time1 = message1.timestamp?.intValue, let time2 = message2.timestamp?.intValue{
-                            return time1 > time2
-                        }
-                        return false
-                    })
-                }
-                
-                
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            }
-        }, withCancel: nil)
-    }
     
     // MARK:  UITableViewController method
     
@@ -297,15 +232,7 @@ class MessageController: UIViewController, UITableViewDataSource, UITableViewDel
         containerView.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         containerView.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
         containerView.heightAnchor.constraint(equalTo: titleView.heightAnchor).isActive = true
-    
-//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(showChatControllerForUser(user: nil)))
-//        nameLabel.isUserInteractionEnabled = true
-//        profileImageView.isUserInteractionEnabled = true
         titleView.isUserInteractionEnabled = true
-//        nameLabel.addGestureRecognizer(tapGestureRecognizer)
-//        profileImageView.addGestureRecognizer(tapGestureRecognizer)
-//        titleView.addTarget(self, action: #selector(showChatController), for: .touchUpInside)
-//        titleView.addGestureRecognizer(tapGestureRecognizer)
         self.navigationItem.titleView = titleView
     }
 
