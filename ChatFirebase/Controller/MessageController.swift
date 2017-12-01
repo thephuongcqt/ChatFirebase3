@@ -39,6 +39,33 @@ class MessageController: UIViewController, UITableViewDataSource, UITableViewDel
         tableView.register(UserCell.self, forCellReuseIdentifier: "cellId")
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.allowsMultipleSelectionDuringEditing = true
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else{
+            return
+        }
+        let message = self.messages[indexPath.row]
+        if let chatPartnerId = message.getChatPartnerId(){
+            FIRDatabase.database().reference().child("user-messagees").child(uid).child(chatPartnerId).removeValue(completionBlock: { (error, ref) in
+                if error != nil{
+                    print(error!)
+                    return
+                }
+                self.messagesDictionary.removeValue(forKey: chatPartnerId)
+                self.attemptReloadOfTable()
+                
+                // this is one way of updating the table, but it's actually not that safe
+//                self.messages.remove(at: indexPath.row)
+//                self.tableView.deleteRows(at:[indexPath], with: .automatic)
+            })
+        }
+        
     }
     
     // MARK: Observe user messages
@@ -59,6 +86,10 @@ class MessageController: UIViewController, UITableViewDataSource, UITableViewDel
                 
             }, withCancel: nil)
             
+        }, withCancel: nil)
+        ref.observe(.childRemoved, with: { (snapshot) in
+            self.messagesDictionary.removeValue(forKey: snapshot.key)
+            self.attemptReloadOfTable()
         }, withCancel: nil)
     }
     
