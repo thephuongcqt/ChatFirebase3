@@ -124,6 +124,14 @@ extension UIView {
         }
     }
     
+    var safeLeadingAnchor: NSLayoutXAxisAnchor{
+        if #available(iOS 11.0, *) {
+            return self.safeAreaLayoutGuide.leadingAnchor
+        } else {
+            return self.leadingAnchor
+        }
+    }
+    
     var safeLeftAnchor: NSLayoutXAxisAnchor {
         if #available(iOS 11.0, *){
             return self.safeAreaLayoutGuide.leftAnchor
@@ -140,11 +148,53 @@ extension UIView {
         }
     }
     
+    var safeTrailingAnchor: NSLayoutXAxisAnchor {
+        if #available(iOS 11.0, *){
+            return self.safeAreaLayoutGuide.trailingAnchor
+        }else {
+            return self.trailingAnchor
+        }
+    }
+    
     var safeBottomAnchor: NSLayoutYAxisAnchor {
         if #available(iOS 11.0, *) {
             return self.safeAreaLayoutGuide.bottomAnchor
         } else {
             return self.bottomAnchor
         }
+    }
+    
+    var safeBottomPadding: CGFloat{
+        if #available(iOS 11, *){
+            return self.safeAreaInsets.bottom
+        }
+        return 0
+    }
+    
+    var safeTopPadding: CGFloat{
+        if #available(iOS 11, *){
+            return self.safeAreaInsets.top
+        }
+        return 0
+    }
+    
+    var safeLeftPadding: CGFloat{
+        if #available(iOS 11, *){
+            return self.safeAreaInsets.left
+        }
+        return 0
+    }
+    var safeRightPadding: CGFloat{
+        if #available(iOS 11, *){
+            return self.safeAreaInsets.right
+        }
+        return 0
+    }
+    
+    var safeWidth: CGFloat{
+        if #available(iOS 11, *){
+            return self.safeAreaLayoutGuide.layoutFrame.width
+        }
+        return self.frame.width
     }
 }
